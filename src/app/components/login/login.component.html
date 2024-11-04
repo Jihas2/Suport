@@ -1,1 +1,22 @@
-<p>login works!</p>
+<div class="login-container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card login-card">
+        <div class="card-body">
+            <h3>Login</h3>
+            <br>
+            <form (ngSubmit)="onLogin()">
+                <mdb-form-control>
+                    <input mdbInput type="text" id="email" class="form-control" required />
+                    <label mdbLabel class="form-label" for="email">Email:</label>
+                </mdb-form-control>
+                <br>
+                <mdb-form-control>
+                    <input mdbInput type="password" id="senha" class="form-control" required />
+                    <label mdbLabel class="form-label" for="senha">Senha:</label>
+                </mdb-form-control>
+                <br>
+                <button type="button" class="btn btn-primary btn-rounded" mdbRipple (click)="onLogin()">Entrar</button>
+
+            </form>
+        </div>
+    </div>
+</div>

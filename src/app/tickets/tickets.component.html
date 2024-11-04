@@ -1,0 +1,22 @@
+<div class="tickets-container">
+    <h2>Abrir um Novo Ticket</h2>
+    <form (ngSubmit)="abrirTicket(titulo.value, descricao.value)">
+      <div class="form-group">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" #titulo name="titulo" required />
+      </div>
+      <div class="form-group">
+        <label for="descricao">Descrição do Problema</label>
+        <textarea id="descricao" #descricao name="descricao" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Enviar Ticket</button>
+    </form>
+  
+    <!-- Exibir técnico selecionado após o envio -->
+    <div *ngIf="tecnicoSelecionado" class="tecnico-info">
+      <h3>Técnico Designado para o Suporte</h3>
+      <p><strong>Nome:</strong> {{ tecnicoSelecionado.nome }}</p>
+      <p><strong>Especialidade:</strong> {{ tecnicoSelecionado.especialidade }}</p>
+    </div>
+  </div>
+  

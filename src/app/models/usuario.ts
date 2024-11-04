@@ -1,9 +1,9 @@
-export class Tecnico {
+export class Usuario {
 
     constructor(
         public id: number,
         public nome: string,
-        public especialidade: string
+        public email: string
       ) {}
 
 }
