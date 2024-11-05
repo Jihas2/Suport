@@ -9,6 +9,7 @@ import { AdminListaTecnicoComponent } from './components/admin-lista-tecnico/adm
 import { AdminListaUsuarioComponent } from './components/admin-lista-usuario/admin-lista-usuario.component';
 import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
 import { TicketsComponent } from './tickets/tickets.component';
+import { AdminTicketsComponent } from './components/admin-tickets/admin-tickets.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -19,5 +20,6 @@ export const routes: Routes = [
     { path: 'admin/navbar', component: NavbarAdminComponent },
     { path: 'admin/home', component: AdminHomeComponent },
     { path: 'admin/tecnicos', component: AdminListaTecnicoComponent },
-    { path: 'admin/usuarios', component: AdminListaUsuarioComponent }
+    { path: 'admin/usuarios', component: AdminListaUsuarioComponent },
+    { path: 'admin/tickets', component: AdminTicketsComponent }
 ];
