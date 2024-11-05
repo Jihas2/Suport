@@ -1,75 +1,46 @@
-<div class="container mt-4">
-    <h3>Lista de Usuários</h3>
-  
-    <button class="btn btn-primary mb-3" (click)="mostrarFormulario()">
-      Adicionar Usuário
-    </button>  
-  
-    <div *ngIf="formularioVisivel" class="mb-3">
-      <h4>Adicionar Novo Usuário</h4>
-      <form [formGroup]="usuarioForm" (ngSubmit)="adicionarUsuario()">
-        <div class="mb-2">
-          <input type="text" formControlName="nome" placeholder="Nome" class="form-control" required>
-        </div>
-        <div class="mb-2">
-          <input type="email" formControlName="email" placeholder="Email" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-success">Salvar Usuário</button>
-        <button type="button" class="btn btn-secondary" (click)="cancelarAdicionar()">Cancelar</button>
-      </form>
+<div class="container">
+  <h2>Lista de Usuários</h2>
+
+  <!-- Formulário para adicionar ou editar usuários -->
+  <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input id="nome" formControlName="nome" type="text" class="form-control" required />
     </div>
-  
-    <div class="table-responsive" *ngIf="!formularioVisivel">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let usuario of usuarios">
-            <td>{{ usuario.id }}</td>
-            <td *ngIf="usuarioEmEdicaoId !== usuario.id">{{ usuario.nome }}</td>
-            <td *ngIf="usuarioEmEdicaoId !== usuario.id">{{ usuario.email }}</td>
-  
-           
-            <ng-container *ngIf="usuarioEmEdicaoId === usuario.id" [formGroup]="usuarioForm">
-              <td>
-                <input type="text" formControlName="nome">
-              </td>
-              <td>
-                <input type="email" formControlName="email">
-              </td>
-            </ng-container>
-  
-            <td>
-              
-              <button *ngIf="usuarioEmEdicaoId !== usuario.id" 
-                      class="btn btn-warning btn-sm me-1" 
-                      (click)="editarUsuario(usuario)">
-                Editar
-              </button>
-              <button *ngIf="usuarioEmEdicaoId === usuario.id" 
-                      class="btn btn-success btn-sm me-1" 
-                      (click)="salvarEdicao()">
-                Salvar
-              </button>
-              <button *ngIf="usuarioEmEdicaoId === usuario.id" 
-                      class="btn btn-secondary btn-sm me-1" 
-                      (click)="cancelarEdicao()">
-                Cancelar
-              </button>
-              <button class="btn btn-danger btn-sm" 
-                      (click)="excluirUsuario(usuario.id)">
-                Excluir
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" type="email" class="form-control" required />
     </div>
-  </div>
-  
+    <button type="submit" class="btn btn-primary">
+      {{ usuarioEmEdicao ? 'Salvar Alterações' : 'Adicionar Usuário' }}
+    </button>
+    <button type="button" (click)="cancelarEdicao()" class="btn btn-secondary" [style.display]="exibirCancelar() ? 'inline-block' : 'none'">
+      Cancelar
+    </button>
+  </form>
+
+  <hr />
+
+  <!-- Tabela de usuários -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of usuarios; track $index) { 
+        <tr>
+        <td>{{ usuario.nome }}</td>
+        <td>{{ usuario.email }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="editarUsuario(usuario)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="excluirUsuario(usuario.id)">Excluir</button>
+        </td>
+      </tr>
+       }
+    </tbody>
+  </table>
+</div>

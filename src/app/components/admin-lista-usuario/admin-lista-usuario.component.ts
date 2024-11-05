@@ -1,111 +1,109 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Usuario } from '../../models/usuario';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-admin-lista-usuario',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './admin-lista-usuario.component.html',
-  styleUrl: './admin-lista-usuario.component.scss'
+  styleUrls: ['./admin-lista-usuario.component.scss']
 })
 export class AdminListaUsuarioComponent implements OnInit {
-
   usuarios: Usuario[] = [];
-  usuarioEmEdicaoId: number | null = null;
   usuarioForm: FormGroup;
-  formularioVisivel: boolean = false;
+  usuarioEmEdicao: Usuario | null = null;
 
-  constructor(private fb: FormBuilder) {
-    
+  constructor(private fb: FormBuilder, private usuarioService: UsuarioService) {
     this.usuarioForm = this.fb.group({
-      nome: [''], 
-      email: [''] 
+      nome: [''],
+      email: ['']
     });
   }
 
   ngOnInit(): void {
-    this.carregarUsuarios(); 
+    this.carregarUsuarios();
   }
 
   carregarUsuarios(): void {
-    const usuariosString = localStorage.getItem('usuarios');
-    if (usuariosString) {
-      this.usuarios = JSON.parse(usuariosString);
-    } else {
-      
-      this.usuarios = [
-        { id: 1, nome: 'João Silva', email: 'joao.silva@example.com' },
-        { id: 2, nome: 'Maria Santos', email: 'maria.santos@example.com' },
-        { id: 3, nome: 'Lucas Lima', email: 'lucas.lima@example.com' }
-      ];
-    }
-  }
-
-  salvarUsuarios(): void {
-    localStorage.setItem('usuarios', JSON.stringify(this.usuarios)); 
-  }
-
-  
-  mostrarFormulario(): void {
-    this.formularioVisivel = true;
-    this.usuarioForm.reset(); 
-  }
-
-  cancelarAdicionar(): void {
-    this.formularioVisivel = false;
-    this.usuarioForm.reset(); 
-  }
-
-  adicionarUsuario(): void {
-    const nome = this.usuarioForm.get('nome')?.value;
-    const email = this.usuarioForm.get('email')?.value;
-
-    if (nome && email) { 
-      const novoUsuario: Usuario = {
-        id: this.usuarios.length > 0 ? this.usuarios[this.usuarios.length - 1].id + 1 : 1, 
-        nome,
-        email
-      };
-
-      this.usuarios.push(novoUsuario); 
-      this.salvarUsuarios();
-      this.cancelarAdicionar();
-    }
-  }
-
-  editarUsuario(usuario: Usuario): void {
-    this.usuarioEmEdicaoId = usuario.id;
-    this.usuarioForm.patchValue({
-      nome: usuario.nome,
-      email: usuario.email
+    this.usuarioService.findAll().subscribe({
+      next: (usuarios) => {
+        this.usuarios = usuarios;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar usuários:', error);
+      }
     });
   }
 
-  salvarEdicao(): void {
-    if (this.usuarioEmEdicaoId !== null) {
-      const usuarioIndex = this.usuarios.findIndex(u => u.id === this.usuarioEmEdicaoId);
-      if (usuarioIndex !== -1) {
-        
-        this.usuarios[usuarioIndex].nome = this.usuarioForm.get('nome')?.value;
-        this.usuarios[usuarioIndex].email = this.usuarioForm.get('email')?.value;
+  onSubmit(): void {
+    if (this.usuarioEmEdicao) {
+      this.salvarEdicao();
+    } else {
+      this.adicionarUsuario();
+    }
+  }
 
-        this.salvarUsuarios();
+  adicionarUsuario(): void {
+    const novoUsuario: Usuario = this.usuarioForm.value; // Certifique-se de que isso está correto
+    this.usuarioService.salvar(novoUsuario).subscribe({
+      next: () => {
+        this.carregarUsuarios(); // Atualiza a lista de usuários
+        this.usuarioForm.reset();
+      },
+      error: (error) => {
+        console.error('Erro ao adicionar usuário:', error);
       }
-      this.usuarioEmEdicaoId = null; 
-      this.usuarioForm.reset();
+    });
+  }
+
+  editarUsuario(usuario: Usuario): void {
+    this.usuarioEmEdicao = usuario;
+    this.usuarioForm.patchValue(usuario);
+  }
+
+  salvarEdicao(): void {
+    if (this.usuarioEmEdicao) {
+      const usuarioAtualizado: Usuario = {
+        ...this.usuarioEmEdicao,
+        ...this.usuarioForm.value
+      };
+
+      this.usuarioService.update(usuarioAtualizado).subscribe({
+        next: () => {
+          this.carregarUsuarios();
+          this.usuarioEmEdicao = null;
+          this.usuarioForm.reset();
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar usuário:', error);
+        }
+      });
     }
   }
 
   cancelarEdicao(): void {
-    this.usuarioEmEdicaoId = null; 
+    this.usuarioEmEdicao = null;
     this.usuarioForm.reset();
   }
 
   excluirUsuario(id: number): void {
-    console.log('Excluir Usuário com ID:', id);
-    this.usuarios = this.usuarios.filter(usuario => usuario.id !== id); 
-    this.salvarUsuarios(); 
+    this.usuarioService.deleteById(id).subscribe({
+      next: () => {
+        this.carregarUsuarios(); // Atualiza a lista de usuários
+      },
+      error: (error) => {
+        console.error('Erro ao excluir usuário:', error);
+      }
+    });
+  }
+
+  trackById(index: number, usuario: Usuario): number {
+    return usuario.id; // Retorna o id do usuário
+  }
+  
+  exibirCancelar(): boolean {
+    return this.usuarioEmEdicao !== null;
   }
 }

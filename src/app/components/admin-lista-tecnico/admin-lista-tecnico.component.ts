@@ -1,22 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Tecnico } from '../../models/tecnico';
+import { TecnicoService } from '../../services/tecnico.service';
 
 @Component({
   selector: 'app-admin-lista-tecnico',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './admin-lista-tecnico.component.html',
-  styleUrl: './admin-lista-tecnico.component.scss'
+  styleUrls: ['./admin-lista-tecnico.component.scss']
 })
 export class AdminListaTecnicoComponent implements OnInit {
   tecnicos: Tecnico[] = [];
-  tecnicoEmEdicaoId: number | null = null;
   tecnicoForm: FormGroup;
-  mostrarFormulario: boolean = false; 
+  tecnicoEmEdicao: Tecnico | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private tecnicoService: TecnicoService) {
     this.tecnicoForm = this.fb.group({
       nome: [''],
       especialidade: ['']
@@ -28,78 +27,84 @@ export class AdminListaTecnicoComponent implements OnInit {
   }
 
   carregarTecnicos(): void {
-    const tecnicosString = localStorage.getItem('tecnicos');
-    if (tecnicosString) {
-      this.tecnicos = JSON.parse(tecnicosString);
+    this.tecnicoService.findAll().subscribe({
+      next: (tecnicos) => {
+        this.tecnicos = tecnicos;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar técnicos:', error);
+      }
+    });
+  }
+
+  // Define a ação do botão de adicionar ou salvar
+  onSubmit(): void {
+    if (this.tecnicoEmEdicao) {
+      this.salvarEdicao();
     } else {
-      this.tecnicos = [
-        { id: 1, nome: 'Carlos Silva', especialidade: 'Redes' },
-        { id: 2, nome: 'Ana Santos', especialidade: 'Hardware' },
-        { id: 3, nome: 'Pedro Lima', especialidade: 'Software' }
-      ];
-    }
-  }
-
-  salvarTecnicos(): void {
-    localStorage.setItem('tecnicos', JSON.stringify(this.tecnicos));
-  }
-
-  toggleAdicionarTecnico(): void {
-    this.mostrarFormulario = !this.mostrarFormulario; 
-    if (!this.mostrarFormulario) {
-      this.tecnicoForm.reset(); 
+      this.adicionarTecnico();
     }
   }
 
   adicionarTecnico(): void {
-    const nome = this.tecnicoForm.get('nome')?.value;
-    const especialidade = this.tecnicoForm.get('especialidade')?.value;
-
-    if (nome && especialidade) {
-      const novoTecnico: Tecnico = {
-        id: this.tecnicos.length > 0 ? this.tecnicos[this.tecnicos.length - 1].id + 1 : 1,
-        nome,
-        especialidade
-      };
-
-      this.tecnicos.push(novoTecnico);
-      this.salvarTecnicos();
-      this.tecnicoForm.reset();
-      this.mostrarFormulario = false; 
-    }
-  }
-
-  editarTecnico(tecnico: Tecnico): void {
-    this.tecnicoEmEdicaoId = tecnico.id; 
-    this.tecnicoForm.patchValue({
-      nome: tecnico.nome, 
-      especialidade: tecnico.especialidade
+    const novoTecnico: Tecnico = this.tecnicoForm.value;
+    this.tecnicoService.Salvar(novoTecnico).subscribe({
+      next: () => {
+        this.carregarTecnicos(); // Atualiza a lista de técnicos
+        this.tecnicoForm.reset();
+      },
+      error: (error) => {
+        console.error('Erro ao adicionar técnico:', error);
+      }
     });
   }
 
-  salvarEdicao(): void {
-    if (this.tecnicoEmEdicaoId !== null) {
-      const tecnicoIndex = this.tecnicos.findIndex(t => t.id === this.tecnicoEmEdicaoId);
-      if (tecnicoIndex !== -1) {
-      
-        this.tecnicos[tecnicoIndex].nome = this.tecnicoForm.get('nome')?.value;
-        this.tecnicos[tecnicoIndex].especialidade = this.tecnicoForm.get('especialidade')?.value;
+  editarTecnico(tecnico: Tecnico): void {
+    this.tecnicoEmEdicao = tecnico;
+    this.tecnicoForm.patchValue(tecnico);
+  }
 
-        this.salvarTecnicos();
-      }
-      this.tecnicoEmEdicaoId = null;
-      this.tecnicoForm.reset();
+  salvarEdicao(): void {
+    if (this.tecnicoEmEdicao) {
+      const tecnicoAtualizado: Tecnico = {
+        ...this.tecnicoEmEdicao,
+        ...this.tecnicoForm.value
+      };
+
+      this.tecnicoService.update(tecnicoAtualizado).subscribe({
+        next: () => {
+          this.carregarTecnicos();
+          this.tecnicoEmEdicao = null;
+          this.tecnicoForm.reset();
+        },
+        error: (error) => {
+          console.error('Erro ao atualizar técnico:', error);
+        }
+      });
     }
   }
 
   cancelarEdicao(): void {
-    this.tecnicoEmEdicaoId = null;
+    this.tecnicoEmEdicao = null;
     this.tecnicoForm.reset();
   }
 
   excluirTecnico(id: number): void {
-    console.log('Excluir Técnico com ID:', id);
-    this.tecnicos = this.tecnicos.filter(tecnico => tecnico.id !== id);
-    this.salvarTecnicos();
+    this.tecnicoService.deleteBYiD(id).subscribe({
+      next: () => {
+        this.carregarTecnicos(); // Atualiza a lista de técnicos
+      },
+      error: (error) => {
+        console.error('Erro ao excluir técnico:', error);
+      }
+    });
+  }
+
+  trackById(index: number, tecnico: Tecnico): number {
+    return tecnico.id; // ou qualquer propriedade única do técnico
+  }
+  
+  exibirCancelar(): boolean {
+    return this.tecnicoEmEdicao !== null;
   }
 }

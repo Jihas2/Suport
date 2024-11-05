@@ -1,73 +1,46 @@
-<div class="container mt-4">
-    <h3>Lista de Técnicos</h3>
-  
-    <button class="btn btn-primary mb-3" (click)="toggleAdicionarTecnico()">
-      {{ mostrarFormulario ? 'Cancelar' : 'Adicionar Técnico' }}
+<div class="container">
+  <h2>Lista de Técnicos</h2>
+
+  <!-- Formulário para adicionar ou editar técnicos -->
+  <form [formGroup]="tecnicoForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input id="nome" formControlName="nome" type="text" class="form-control" required />
+    </div>
+    <div class="form-group">
+      <label for="especialidade">Especialidade</label>
+      <input id="especialidade" formControlName="especialidade" type="text" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">
+      {{ tecnicoEmEdicao ? 'Salvar Alterações' : 'Adicionar Técnico' }}
     </button>
-  
-    <div *ngIf="mostrarFormulario">
-      <form [formGroup]="tecnicoForm" (ngSubmit)="adicionarTecnico()">
-        <div class="mb-3">
-          <label for="nome" class="form-label">Nome</label>
-          <input type="text" id="nome" formControlName="nome" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label for="especialidade" class="form-label">Especialidade</label>
-          <input type="text" id="especialidade" formControlName="especialidade" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-success">Salvar</button>
-      </form>
-    </div>
-  
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Especialidade</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let tecnico of tecnicos">
-            <td>{{ tecnico.id }}</td>
-            <td *ngIf="tecnicoEmEdicaoId !== tecnico.id">{{ tecnico.nome }}</td>
-            <td *ngIf="tecnicoEmEdicaoId !== tecnico.id">{{ tecnico.especialidade }}</td>
-  
-            <ng-container *ngIf="tecnicoEmEdicaoId === tecnico.id" [formGroup]="tecnicoForm">
-              <td>
-                <input type="text" formControlName="nome">
-              </td>
-              <td>
-                <input type="text" formControlName="especialidade">
-              </td>
-            </ng-container>
-  
-            <td>
-              <button *ngIf="tecnicoEmEdicaoId !== tecnico.id" 
-                      class="btn btn-warning btn-sm me-1" 
-                      (click)="editarTecnico(tecnico)">
-                Editar
-              </button>
-              <button *ngIf="tecnicoEmEdicaoId === tecnico.id" 
-                      class="btn btn-success btn-sm me-1" 
-                      (click)="salvarEdicao()">
-                Salvar
-              </button>
-              <button *ngIf="tecnicoEmEdicaoId === tecnico.id" 
-                      class="btn btn-secondary btn-sm me-1" 
-                      (click)="cancelarEdicao()">
-                Cancelar
-              </button>
-              <button class="btn btn-danger btn-sm" 
-                      (click)="excluirTecnico(tecnico.id)">
-                Excluir
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  
+    <button type="button" (click)="cancelarEdicao()" class="btn btn-secondary" [style.display]="exibirCancelar() ? 'inline-block' : 'none'">
+      Cancelar
+    </button>
+  </form>
+
+  <hr />
+
+  <!-- Tabela de técnicos -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Especialidade</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (tecnico of tecnicos; track $index) { 
+      <tr>
+        <td>{{ tecnico.nome }}</td>
+        <td>{{ tecnico.especialidade }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="editarTecnico(tecnico)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="excluirTecnico(tecnico.id)">Excluir</button>
+        </td>
+      </tr>
+     }
+    </tbody>
+  </table>
+</div>

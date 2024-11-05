@@ -1,15 +1,25 @@
 <div class="container mt-4">
-  <h3>Lista de Usuários Satisfeitos</h3>
+  <h3>Lista de Usuários</h3>
 
-  <div class="mt-4">
-    <h4>O que dizem os usuários:</h4>
-    <div class="card mb-3" *ngFor="let comentario of comentarios">
-      <div class="card-body">
-        <blockquote class="blockquote">
-          <p class="mb-0">{{ comentario.texto }}</p>
-          <footer class="blockquote-footer">{{ comentario.autor }}</footer>
-        </blockquote>
-      </div>
-    </div>
-  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuarios of Userlist; track $index) {
+
+        <tr>
+        <th scope="row">{{usuarios.id}}</th>
+        <td>{{usuarios.nome}}</td>
+        <td>{{usuarios.email}}</td>
+        <td></td>
+      </tr>
+  
+        }
+    </tbody>
+  </table>  
 </div>

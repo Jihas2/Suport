@@ -1,15 +1,21 @@
-<div class="container mt-4">
-  <h3>Lista de Técnicos</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Nome</th>
+      <th scope="col">especialidade</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (tecnico of tecList; track $index) {
 
-  <div class="mt-4">
-    <h4>Técnicos em Nossa Equipe:</h4>
-    <div class="card mb-3" *ngFor="let tecnico of tecnicos">
-      <div class="card-body">
-        <h5 class="card-title">{{ tecnico.nome }}</h5>
-        <p class="card-text"><strong>Experiência:</strong> {{ tecnico.experiencia }}</p>
-        <p class="card-text"><strong>Área:</strong> {{ tecnico.area }}</p>
-        <p class="card-text">{{ tecnico.descricao }}</p>
-      </div>
-    </div>
-  </div>
-</div>
+      <tr>
+      <th scope="row">{{tecnico.id}}</th>
+      <td>{{tecnico.nome}}</td>
+      <td>{{tecnico.especialidade}}</td>
+      <td></td>
+    </tr>
+
+      }
+  </tbody>
+</table>
