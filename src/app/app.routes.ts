@@ -10,6 +10,7 @@ import { AdminListaUsuarioComponent } from './components/admin-lista-usuario/adm
 import { NavbarAdminComponent } from './navbar-admin/navbar-admin.component';
 import { TicketsComponent } from './tickets/tickets.component';
 import { AdminTicketsComponent } from './components/admin-tickets/admin-tickets.component';
+import { guardGuard } from './guard/guard.guard';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -17,9 +18,10 @@ export const routes: Routes = [
     { path: 'tecnicos', component: ListaTecnicoComponent },
     { path: 'usuarios', component: ListaUsuarioComponent },
     { path: 'tickets', component: TicketsComponent },
-    { path: 'admin/navbar', component: NavbarAdminComponent },
-    { path: 'admin/home', component: AdminHomeComponent },
-    { path: 'admin/tecnicos', component: AdminListaTecnicoComponent },
-    { path: 'admin/usuarios', component: AdminListaUsuarioComponent },
-    { path: 'admin/tickets', component: AdminTicketsComponent }
-];
+    { path: 'admin/navbar', component: NavbarAdminComponent, canActivate:[guardGuard]},
+        { path: 'admin/home', component: AdminHomeComponent, canActivate:[guardGuard]},
+        { path: 'admin/tecnicos', component: AdminListaTecnicoComponent, canActivate:[guardGuard]},
+        { path: 'admin/usuarios', component: AdminListaUsuarioComponent, canActivate:[guardGuard]},
+        { path: 'admin/tickets', component: AdminTicketsComponent, canActivate:[guardGuard]}
+
+];  

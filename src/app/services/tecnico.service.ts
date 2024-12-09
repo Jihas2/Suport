@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpStatusCode } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Tecnico } from '../models/tecnico';
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Tecnico } from '../models/tecnico';
 export class TecnicoService {
     http = inject(HttpClient);
 
-    API = "http://localhost:8080/tecnico";
+    API = environment.rotaEndPoint+ "/tecnico";
 
     constructor() { }
 

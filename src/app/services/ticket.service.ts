@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TicketStats } from '../models/ticket';
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TicketService {
   
-  API = 'http://localhost:8080/tickets'
+  API = environment.rotaEndPoint+ "/tickets"
 
   constructor(private http: HttpClient) {}
 

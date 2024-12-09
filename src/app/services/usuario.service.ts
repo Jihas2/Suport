@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Usuario } from '../models/usuario';
 import { HttpClient, HttpStatusCode } from '@angular/common/http';
 import { Observable, of, tap } from 'rxjs';
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class UsuarioService {
   
   http = inject(HttpClient);
 
-    API = "http://localhost:8080/usuarios";
+    API = environment.rotaEndPoint+ "/usuarios";
 
     constructor() { }
 
@@ -20,7 +21,7 @@ export class UsuarioService {
     // }
 
     findAll(): Observable<Usuario[]>  {
-      return this.http.get<Usuario[]>(this.API+"/todos");
+      return this.http.get<Usuario[]>(this.API+"/teste");
     }
 
     findById(usuarioid: number): Observable<Usuario>{

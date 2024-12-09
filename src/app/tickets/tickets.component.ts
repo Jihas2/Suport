@@ -30,13 +30,10 @@ export class TicketsComponent  {
     console.log('Ticket enviado:', ticket);
     alert('Seu ticket foi enviado com sucesso!');
 
-    // Seleciona um técnico aleatório
     this.tecnicoSelecionado = this.tecnicos[Math.floor(Math.random() * this.tecnicos.length)];
 
-    // Força a detecção de mudanças
     this.cdr.detectChanges();
 
-    // Limpa os campos
     this.tituloInput.nativeElement.value = '';
     this.descricaoInput.nativeElement.value = '';
   }
