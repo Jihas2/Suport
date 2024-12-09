@@ -3,12 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TecnicoService } from '../services/tecnico.service';
 import { Tecnico } from '../models/tecnico';
 
-// interface Tecnico {
-//   id: number;
-//   nome: string;
-//   especialidade: string;
-// }
-
 @Component({
   selector: 'app-lista-tecnicos',
   standalone: true,

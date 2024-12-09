@@ -46,10 +46,10 @@ export class AdminListaUsuarioComponent implements OnInit {
   }
 
   adicionarUsuario(): void {
-    const novoUsuario: Usuario = this.usuarioForm.value; // Certifique-se de que isso está correto
+    const novoUsuario: Usuario = this.usuarioForm.value;
     this.usuarioService.salvar(novoUsuario).subscribe({
       next: () => {
-        this.carregarUsuarios(); // Atualiza a lista de usuários
+        this.carregarUsuarios();
         this.usuarioForm.reset();
       },
       error: (error) => {
@@ -91,7 +91,7 @@ export class AdminListaUsuarioComponent implements OnInit {
   excluirUsuario(id: number): void {
     this.usuarioService.deleteById(id).subscribe({
       next: () => {
-        this.carregarUsuarios(); // Atualiza a lista de usuários
+        this.carregarUsuarios();
       },
       error: (error) => {
         console.error('Erro ao excluir usuário:', error);
@@ -100,7 +100,7 @@ export class AdminListaUsuarioComponent implements OnInit {
   }
 
   trackById(index: number, usuario: Usuario): number {
-    return usuario.id; // Retorna o id do usuário
+    return usuario.id;
   }
   
   exibirCancelar(): boolean {

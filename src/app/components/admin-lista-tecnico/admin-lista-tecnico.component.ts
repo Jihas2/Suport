@@ -37,7 +37,6 @@ export class AdminListaTecnicoComponent implements OnInit {
     });
   }
 
-  // Define a ação do botão de adicionar ou salvar
   onSubmit(): void {
     if (this.tecnicoEmEdicao) {
       this.salvarEdicao();
@@ -50,7 +49,7 @@ export class AdminListaTecnicoComponent implements OnInit {
     const novoTecnico: Tecnico = this.tecnicoForm.value;
     this.tecnicoService.Salvar(novoTecnico).subscribe({
       next: () => {
-        this.carregarTecnicos(); // Atualiza a lista de técnicos
+        this.carregarTecnicos();
         this.tecnicoForm.reset();
       },
       error: (error) => {
@@ -92,7 +91,7 @@ export class AdminListaTecnicoComponent implements OnInit {
   excluirTecnico(id: number): void {
     this.tecnicoService.deleteBYiD(id).subscribe({
       next: () => {
-        this.carregarTecnicos(); // Atualiza a lista de técnicos
+        this.carregarTecnicos();
       },
       error: (error) => {
         console.error('Erro ao excluir técnico:', error);
@@ -101,7 +100,7 @@ export class AdminListaTecnicoComponent implements OnInit {
   }
 
   trackById(index: number, tecnico: Tecnico): number {
-    return tecnico.id; // ou qualquer propriedade única do técnico
+    return tecnico.id;
   }
   
   exibirCancelar(): boolean {
